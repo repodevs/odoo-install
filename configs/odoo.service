@@ -1,0 +1,25 @@
+[Unit]
+Description=odoo
+Requires=postgresql.service
+After=postgresql.service
+Wants=nginx.service
+
+[Install]
+Alias=odoo.service
+
+[Service]
+Type=simple
+PermissionsStartOnly=true
+EnvironmentFile=-/etc/odoo/odoo-server.conf
+User={{ODOO_USER}}
+Group={{ODOO_USER}}
+SyslogIdentifier=odoo-server
+PIDFile=/run/odoo/odoo-server.pid
+#ExecStartPre=/usr/bin/install -d -m755 -o odoo -g odoo /run/odoo
+ExecStart={{ODOO_SOURCE_DIR}}/openerp-server --config={{OPENERP_SERVER}} --logfile={{LOGS_DIR}}/odoo-server.log
+#ExecStop=/bin/kill $MAINPID
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
